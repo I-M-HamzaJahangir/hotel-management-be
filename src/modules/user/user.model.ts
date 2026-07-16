@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { USER_ROLES } from "../constants/role";
 import { isValidPhoneNumber } from "libphonenumber-js";
+import { USER_ROLES } from "../../constants/role";
 
 const userSchema = new mongoose.Schema(
   {
@@ -47,9 +47,7 @@ const userSchema = new mongoose.Schema(
       type: Date,
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true },
 );
 
 const User = mongoose.model("User", userSchema);

@@ -2,7 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { HTTP_STATUS } from "../constants/constant";
 import { verifyJWTToken } from "../utils/helper";
 
-const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
+const authenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const token = req.cookies[process.env.ACCESS_TOKEN_COOKIE_NAME!];
     if (!token) {
@@ -22,4 +26,4 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { checkAuth };
+export { authenticate };
