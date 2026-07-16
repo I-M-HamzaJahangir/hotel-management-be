@@ -1,5 +1,5 @@
-import * as z from "zod";
 import { isValidPhoneNumber } from "libphonenumber-js";
+import * as z from "zod";
 
 const signupSchema = z.object({
   name: z.string().trim().min(2),
@@ -18,4 +18,4 @@ const signinSchema = z.object({
   password: z.string().min(8),
 });
 
-export { signupSchema, signinSchema };
+export { signinSchema, signupSchema };

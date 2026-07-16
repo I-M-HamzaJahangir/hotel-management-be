@@ -2,7 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db";
-import authRoutes from "./routes/auth.routes";
+import authRoutes from "./modules/auth/auth.route";
+import userRoutes from "./modules/user/user.route";
 
 dotenv.config();
 const app = express();
@@ -16,6 +17,7 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api", authRoutes);
+app.use("/api", userRoutes);
 
 const start = async () => {
   try {
