@@ -16,8 +16,8 @@ app.get("/", (_req, res) => {
   res.send("Hello, World!");
 });
 
-app.use("/api", authRoutes);
-app.use("/api", userRoutes);
+app.use("/api/v1", authRoutes);
+app.use("/api/v1", userRoutes);
 
 const start = async () => {
   try {
