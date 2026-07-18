@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
+import createHttpError from "http-errors";
 import mongoose from "mongoose";
-const validateMongoID = (req: Request, res: Response, next: NextFunction) => {
+import { HTTP_STATUS } from "../constants/constant";
+const validateMongoID = (req: Request, _res: Response, next: NextFunction) => {
   const id = req.params.id as string;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({
-      msg: "Invalid Id",
-    });
+    throw createHttpError(HTTP_STATUS.BAD_REQUEST, "Invalid Id");
   }
   next();
 };

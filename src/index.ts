@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db";
 import authRoutes from "./modules/auth/auth.route";
 import userRoutes from "./modules/user/user.route";
+import amenityRoutes from "./modules/amenity/amenity.routes";
+import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
 const app = express();
@@ -18,7 +20,9 @@ app.get("/", (_req, res) => {
 
 app.use("/api/v1", authRoutes);
 app.use("/api/v1", userRoutes);
+app.use("/api/v1/amenities", amenityRoutes);
 
+app.use(errorHandler);
 const start = async () => {
   try {
     await connectDB();
@@ -27,6 +31,7 @@ const start = async () => {
     });
   } catch (error) {
     console.error("Error starting the server:", error);
+    process.exit(1);
   }
 };
 

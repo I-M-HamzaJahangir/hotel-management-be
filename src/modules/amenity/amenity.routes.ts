@@ -31,4 +31,4 @@ router.put(
   validateRequest(updateAmenitySchema),
   updateAmenity,
 );
-export { router };
+export default router;

@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import { JwtTokenPayload } from "../types/type";
 import jwt from "jsonwebtoken";
+import { HTTP_STATUS } from "../constants/constant";
+import { Response } from "express";
 
 const hashPassword = async (password: string) => {
   const saltRounds = 12;
@@ -21,4 +23,23 @@ const verifyJWTToken = (token: string): JwtTokenPayload => {
   return jwt.verify(token, process.env.JWT_SECRET!) as JwtTokenPayload;
 };
 
-export { hashPassword, comparePassword, generateJWTToken, verifyJWTToken };
+const sendSuccess = <T>(
+  res: Response,
+  message: string,
+  data?: T,
+  status: number = HTTP_STATUS.OK,
+) => {
+  return res.status(status).json({
+    success: true,
+    message,
+    ...(data !== undefined && { data }),
+  });
+};
+
+export {
+  hashPassword,
+  comparePassword,
+  generateJWTToken,
+  verifyJWTToken,
+  sendSuccess,
+};
