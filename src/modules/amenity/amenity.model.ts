@@ -6,7 +6,6 @@ const amenitySchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      unique: true,
       lowercase: true,
     },
     icon: {
@@ -23,10 +22,15 @@ const amenitySchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    deletedAt: { type: Date, default: null, index: true },
   },
   {
     timestamps: true,
   },
+);
+amenitySchema.index(
+  { name: 1 },
+  { unique: true, partialFilterExpression: { deletedAt: null } },
 );
 
 const Amenity = mongoose.model("Amenity", amenitySchema);

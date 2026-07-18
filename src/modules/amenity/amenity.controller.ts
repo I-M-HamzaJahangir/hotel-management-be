@@ -13,7 +13,7 @@ const createAmenity = async (req: Request, res: Response) => {
   const { name } = req.body;
   const file = req.file;
 
-  const amenityExist = await Amenity.findOne({ name });
+  const amenityExist = await Amenity.findOne({ name, deletedAt: null });
   if (amenityExist) {
     throw createHttpError(HTTP_STATUS.CONFLICT, "Amenity already exist");
   }
@@ -44,7 +44,7 @@ const updateAmenity = async (req: Request, res: Response) => {
 
   const { name, isActive } = req.body;
 
-  const amenityExist = await Amenity.findById(id);
+  const amenityExist = await Amenity.findOne({ _id: id, deletedAt: null });
   if (!amenityExist) {
     throw createHttpError(HTTP_STATUS.NOT_FOUND, "Amenity not found!");
   }
@@ -69,12 +69,47 @@ const updateAmenity = async (req: Request, res: Response) => {
     };
   }
 
-  const updatedAmenity = await Amenity.findByIdAndUpdate(id, update, {
-    new: true,
-    runValidators: true,
-  });
+  const updatedAmenity = await Amenity.findOneAndUpdate(
+    { _id: id, deletedAt: null },
+    update,
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
 
   return sendSuccess(res, "Amenity updated successfully", updatedAmenity);
 };
 
-export { createAmenity, updateAmenity };
+// PUBLIC guests browsing and only active amenities
+const getAmenities = async (_req: Request, res: Response) => {
+  const amenities = await Amenity.find({ isActive: true, deletedAt: null });
+
+  return sendSuccess(res, "Amenities fetched successfully", amenities);
+};
+
+// ADMIN everything including inactive
+const getAllAmenities = async (_req: Request, res: Response) => {
+  const amenities = await Amenity.find({ deletedAt: null });
+  return sendSuccess(res, "Amenities fetched successfully", amenities);
+};
+
+const deleteAmenity = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const amenity = await Amenity.findOneAndUpdate(
+    { _id: id, deletedAt: null },
+    { deletedAt: new Date() },
+    { new: true },
+  );
+  if (!amenity) {
+    throw createHttpError(HTTP_STATUS.NOT_FOUND, "Amenity not found!");
+  }
+  return sendSuccess(res, "Amenity deleted successfully");
+};
+export {
+  createAmenity,
+  updateAmenity,
+  getAmenities,
+  deleteAmenity,
+  getAllAmenities,
+};
