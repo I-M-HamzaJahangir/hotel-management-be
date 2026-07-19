@@ -14,4 +14,14 @@ export const HTTP_STATUS = {
 
 export const IMAGES_FOLDER = {
   Amenities: "hotel-management/amenities",
+  RoomTypes: "hotel-management/roomTypes",
 } as const;
+
+export const BED_TYPES = [
+  "single",
+  "double",
+  "queen",
+  "king",
+  "bunk",
+  "sofa",
+] as const;

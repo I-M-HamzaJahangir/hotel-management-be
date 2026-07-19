@@ -6,7 +6,7 @@ const createAmenitySchema = z.object({
 
 const updateAmenitySchema = z.object({
   name: z.string().trim().toLowerCase().min(2),
-  isActive: z.boolean(),
+  isActive: z.stringbool(),
 });
 
 export { createAmenitySchema, updateAmenitySchema };

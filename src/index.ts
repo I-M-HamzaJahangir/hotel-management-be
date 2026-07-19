@@ -1,17 +1,19 @@
+import "dotenv/config";
+
 import express from "express";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db";
 import authRoutes from "./modules/auth/auth.route";
 import userRoutes from "./modules/user/user.route";
 import amenityAdminRoutes from "./modules/amenity/amenity.admin.routes";
 import amenityRoutes from "./modules/amenity/amenity.routes";
+import roomTypeAdminRoutes from "./modules/room-type/room-type.admin.routes";
 import { errorHandler } from "./middleware/errorHandler";
 import { authenticate } from "./middleware/authenticate";
 import { authorize } from "./middleware/authorize";
 import { USER_ROLES } from "./constants/role";
+import { getRoomTypes } from "./modules/room-type/room-type.controller";
 
-dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -31,6 +33,14 @@ app.use(
   amenityAdminRoutes,
 );
 app.use("/api/v1/amenities", amenityRoutes);
+
+app.use(
+  "/api/v1/admin/room-types",
+  authenticate,
+  authorize(USER_ROLES.ADMIN),
+  roomTypeAdminRoutes,
+);
+app.use("/api/v1/room-types", getRoomTypes)
 
 app.use(errorHandler);
 const start = async () => {
