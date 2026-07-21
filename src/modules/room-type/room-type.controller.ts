@@ -95,6 +95,7 @@ const updateRoomType = async (req: Request, res: Response) => {
     capacity,
     beds,
     isActive,
+    amenities,
   };
 
   if (files && files.length > 0) {

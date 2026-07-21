@@ -36,4 +36,5 @@ export interface RoomTypeUpdate {
   beds: RoomTypeBed[];
   isActive: boolean;
   images?: RoomTypeImage[];
+  amenities?:string[]
 }

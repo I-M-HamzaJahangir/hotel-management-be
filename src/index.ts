@@ -13,13 +13,15 @@ import { authenticate } from "./middleware/authenticate";
 import { authorize } from "./middleware/authorize";
 import { USER_ROLES } from "./constants/role";
 import { getRoomTypes } from "./modules/room-type/room-type.controller";
+import roomRoutes from "./modules/room/room.routes";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
 app.use(cookieParser());
-
+app.use(cors());
 app.get("/", (_req, res) => {
   res.send("Hello, World!");
 });
@@ -40,7 +42,9 @@ app.use(
   authorize(USER_ROLES.ADMIN),
   roomTypeAdminRoutes,
 );
-app.use("/api/v1/room-types", getRoomTypes)
+app.use("/api/v1/room-types", getRoomTypes);
+
+app.use("/api/v1/room", roomRoutes);
 
 app.use(errorHandler);
 const start = async () => {

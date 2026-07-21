@@ -25,3 +25,10 @@ export const BED_TYPES = [
   "bunk",
   "sofa",
 ] as const;
+
+export const ROOM_STATUS = {
+  AVAILABLE: "available",
+  OCCUPIED: "occupied",
+  MAINTENANCE: "maintenance",
+  CLEANING: "cleaning",
+} as const;
