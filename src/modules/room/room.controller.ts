@@ -86,7 +86,7 @@ const getRoom = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const room = await Room.findOne({ _id: id, deletedAt: null }).populate({
-    path: "roomTypeId",
+    path: "roomType",
     select: "name basePrice capacity images beds",
   });
   if (!room) {
