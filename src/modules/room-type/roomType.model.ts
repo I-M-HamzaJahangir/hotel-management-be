@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { BED_TYPES } from "../../constants/constant";
 
 const roomTypeSchema = new mongoose.Schema(
   {
@@ -26,16 +27,31 @@ const roomTypeSchema = new mongoose.Schema(
       {
         type: {
           type: String,
+          enum: BED_TYPES,
+          required: true,
         },
-        quantity: Number,
+        quantity: { type: Number, required: true, min: 1 },
       },
     ],
-    images: [
+    images: {
+      type: [
+        {
+          url: { type: String, required: true, trim: true },
+          publicId: { type: String, required: true, trim: true },
+        },
+      ],
+      validate: {
+        validator: (arr: unknown[]) => arr.length > 0,
+        message: "At least one image is required",
+      },
+    },
+    amenities: [
       {
-        type: String,
-        trim: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Amenity",
       },
     ],
+
     isActive: {
       type: Boolean,
       default: true,
