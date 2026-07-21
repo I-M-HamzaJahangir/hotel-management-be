@@ -5,6 +5,7 @@ import {
   createAmenity,
   deleteAmenity,
   getAllAmenities,
+  getAmenityById,
   updateAmenity,
 } from "./amenity.controller";
 import { createMulterUploader } from "../../middleware/multer";
@@ -17,6 +18,7 @@ const amenityIconUploader = createMulterUploader({
 });
 
 router.get("/", getAllAmenities);
+router.get("/:id", validateMongoID, getAmenityById);
 
 router.post(
   "/",

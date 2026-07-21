@@ -94,6 +94,17 @@ const getAllAmenities = async (_req: Request, res: Response) => {
   return sendSuccess(res, "Amenities fetched successfully", amenities);
 };
 
+const getAmenityById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const amenity = await Amenity.findOne({ _id: id, deletedAt: null });
+  if (!amenity) {
+    throw createHttpError(HTTP_STATUS.NOT_FOUND, "Amenity not found!");
+  }
+
+  return sendSuccess(res, "Amenity fetched successfully", amenity);
+};
+
 const deleteAmenity = async (req: Request, res: Response) => {
   const { id } = req.params;
   const amenity = await Amenity.findOneAndUpdate(
@@ -112,4 +123,5 @@ export {
   getAmenities,
   deleteAmenity,
   getAllAmenities,
+  getAmenityById,
 };
