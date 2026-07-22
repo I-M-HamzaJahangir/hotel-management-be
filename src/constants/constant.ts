@@ -32,3 +32,19 @@ export const ROOM_STATUS = {
   MAINTENANCE: "maintenance",
   CLEANING: "cleaning",
 } as const;
+
+export const BOOKING_STATUS = {
+  PENDING: "pending",
+  CONFIRMED: "confirmed",
+  CHECKED_IN: "checked_in",
+  CHECKED_OUT: "checked_out",
+  CANCELLED: "cancelled",
+};
+
+
+export const BOOKING_TRANSITIONS: Record<string, string[]> = {
+  [BOOKING_STATUS.CONFIRMED]:   [BOOKING_STATUS.CHECKED_IN, BOOKING_STATUS.CANCELLED],
+  [BOOKING_STATUS.CHECKED_IN]:  [BOOKING_STATUS.CHECKED_OUT, BOOKING_STATUS.CANCELLED],
+  [BOOKING_STATUS.CHECKED_OUT]: [],   
+  [BOOKING_STATUS.CANCELLED]:   [],   
+};

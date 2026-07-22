@@ -36,22 +36,10 @@ const createRoom = async (req: Request, res: Response) => {
 };
 const updateRoom = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { roomNumber, floor, status, roomType } = req.body;
+  const { floor, status, roomType } = req.body;
   const roomExist = await Room.exists({ _id: id, deletedAt: null });
   if (!roomExist) {
     throw createHttpError(HTTP_STATUS.NOT_FOUND, "Room not found!");
-  }
-
-  const roomTaken = await Room.exists({
-    roomNumber,
-    deletedAt: null,
-    _id: { $ne: id },
-  });
-  if (roomTaken) {
-    throw createHttpError(
-      HTTP_STATUS.CONFLICT,
-      `Room ${roomNumber} already exists`,
-    );
   }
 
   const roomTypeExist = await RoomType.exists({
@@ -65,7 +53,7 @@ const updateRoom = async (req: Request, res: Response) => {
     );
   }
 
-  const update = { roomNumber, floor, status, roomType };
+  const update = { floor, status, roomType };
   const updatedRoom = await Room.findByIdAndUpdate(id, update, {
     new: true,
     runValidators: true,

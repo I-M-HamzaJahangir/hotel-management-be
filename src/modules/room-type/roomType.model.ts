@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { InferSchemaType } from "mongoose";
 import { BED_TYPES } from "../../constants/constant";
 
 const roomTypeSchema = new mongoose.Schema(
@@ -62,6 +62,8 @@ const roomTypeSchema = new mongoose.Schema(
   },
 );
 
-const RoomType = mongoose.model("RoomType", roomTypeSchema);
+type RoomTypeDoc = InferSchemaType<typeof roomTypeSchema>;
+
+const RoomType = mongoose.model<RoomTypeDoc>("RoomType", roomTypeSchema);
 
 export { RoomType };
