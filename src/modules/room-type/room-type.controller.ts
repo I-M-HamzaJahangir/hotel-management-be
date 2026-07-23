@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { RoomType } from "./roomType.model";
 import createHttpError from "http-errors";
-import { HTTP_STATUS, IMAGES_FOLDER } from "../../constants/constant";
+import { BOOKING_STATUS, HTTP_STATUS, IMAGES_FOLDER } from "../../constants/constant";
 import {
   deleteFromCloudinary,
   uploadToCloudinary,
@@ -9,6 +9,11 @@ import {
 import { sendSuccess } from "../../utils/helper";
 import { RoomTypeUpdate } from "../../types/type";
 import { Amenity } from "../amenity/amenity.model";
+import { normalizeDate } from "../../utils/date.utils";
+import { Room } from "../room/room.model";
+import { Booking } from "../booking/booking.model";
+import { differenceInCalendarDays } from "date-fns";
+import { availabilityQuerySchema } from "./room-type.validation";
 const createRoomType = async (req: Request, res: Response) => {
   const files = req.files as Express.Multer.File[];
   if (!files || files.length === 0) {
@@ -150,7 +155,36 @@ const getRoomTypes = async (_req: Request, res: Response) => {
   });
   return sendSuccess(res, "Room types fetched successfully", roomTypes);
 };
+const checkAvailability = async (req: Request, res: Response) => {
+  const { checkIn, checkOut, guests } = availabilityQuerySchema.parse(req.query);
 
+  const checkInDate = normalizeDate(checkIn);
+  const checkOutDate = normalizeDate(checkOut);
+
+  const types = await RoomType.find({ isActive: true, capacity: { $gte: Number(guests) } });
+
+  const results = await Promise.all(
+    types.map(async (type) => {
+      const totalRooms = await Room.countDocuments({ roomType: type._id, deletedAt: null });
+      const booked = await Booking.countDocuments({
+        roomType: type._id,
+        status: { $in: [BOOKING_STATUS.CONFIRMED, BOOKING_STATUS.CHECKED_IN] },
+        checkIn: { $lt: checkOutDate },
+        checkOut: { $gt: checkInDate },
+      });
+      const available = totalRooms - booked;
+      const nights = differenceInCalendarDays(checkOutDate, checkInDate);
+      return {
+        roomType: type,
+        available,
+        nights,
+        totalPrice: type.basePrice * nights,
+      };
+    }),
+  );
+
+  return sendSuccess(res, "Availability fetched", results.filter((r) => r.available > 0));
+};
 // ADMIN — everything, including inactive
 const getAllRoomTypes = async (_req: Request, res: Response) => {
   const roomTypes = await RoomType.find({}).populate({
@@ -182,4 +216,5 @@ export {
   getRoomTypes,
   getAllRoomTypes,
   getRoomTypeById,
+  checkAvailability
 };

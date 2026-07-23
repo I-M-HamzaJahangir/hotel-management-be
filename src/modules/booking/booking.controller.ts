@@ -31,7 +31,7 @@ const create = async (req: Request, res: Response) => {
     );
   }
   const totalRooms = await Room.countDocuments({
-    roomTypeId: roomType,
+    roomType: roomType,
     deletedAt: null,
   });
   if (totalRooms === 0) {
@@ -96,7 +96,7 @@ const checkIn = async (req: Request, res: Response) => {
 
   const room = await Room.findOne({
     _id: roomId,
-    roomTypeId: booking.roomType,
+    roomType: booking.roomType,
     deletedAt: null,
   });
   if (!room) {
@@ -240,7 +240,7 @@ const getAvailableRooms = async (req: Request, res: Response) => {
   }
 
   const rooms = await Room.find({
-    roomTypeId: booking.roomType,
+    roomType: booking.roomType,
     deletedAt: null,
   }).select("roomNumber floor status");
 

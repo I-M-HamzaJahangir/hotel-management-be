@@ -12,7 +12,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import { authenticate } from "./middleware/authenticate";
 import { authorize } from "./middleware/authorize";
 import { USER_ROLES } from "./constants/role";
-import { getRoomTypes } from "./modules/room-type/room-type.controller";
+import { checkAvailability, getRoomTypes } from "./modules/room-type/room-type.controller";
 import roomRoutes from "./modules/room/room.routes";
 import bookingRoutes from "./modules/booking/booking.routes";
 import bookingAdminRoutes from "./modules/booking/booking.admin.routes";
@@ -46,7 +46,7 @@ app.use(
   roomTypeAdminRoutes,
 );
 app.use("/api/v1/room-types", getRoomTypes);
-
+app.use("/api/v1/checkAvailability",checkAvailability)
 app.use("/api/v1/room", roomRoutes);
 
 app.use("/api/v1/bookings", authenticate, bookingRoutes); // guest router
