@@ -80,13 +80,14 @@ const signin = async (req: Request, res: Response) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 8 * 60 * 60 * 1000,
+    path: "/",
   });
 
   return sendSuccess(res, "Login successful");
 };
 
 const signout = (_req: Request, res: Response) => {
-  res.clearCookie(process.env.ACCESS_TOKEN_COOKIE_NAME!);
+  res.clearCookie(process.env.ACCESS_TOKEN_COOKIE_NAME!, { path: "/" });
   return sendSuccess(res, "Logout Successful");
 };
 
