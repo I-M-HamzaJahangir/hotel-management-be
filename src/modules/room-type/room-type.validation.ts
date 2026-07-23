@@ -25,4 +25,13 @@ const updateRoomTypeSchema = createRoomTypeSchema.extend({
   isActive: z.stringbool(),
   amenities: z.array(z.string().regex(/^[a-f\d]{24}$/i)).optional(),
 });
-export { createRoomTypeSchema, updateRoomTypeSchema };
+
+const availabilityQuerySchema = z.object({
+  checkIn: z.coerce.date(),
+  checkOut: z.coerce.date(),
+  guests: z.coerce.number().int().min(1),
+}).refine((d) => d.checkOut > d.checkIn, {
+  message: "Check-out must be after check-in",
+  path: ["checkOut"],
+});
+export { createRoomTypeSchema, updateRoomTypeSchema,availabilityQuerySchema };
