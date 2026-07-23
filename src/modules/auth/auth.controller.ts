@@ -87,7 +87,11 @@ const signin = async (req: Request, res: Response) => {
 };
 
 const signout = (_req: Request, res: Response) => {
-  res.clearCookie(process.env.ACCESS_TOKEN_COOKIE_NAME!, { path: "/" });
+  res.clearCookie(process.env.ACCESS_TOKEN_COOKIE_NAME!, {
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  });
   return sendSuccess(res, "Logout Successful");
 };
 
